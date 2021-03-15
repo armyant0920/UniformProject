@@ -25,7 +25,7 @@ import javax.swing.text.html.parser.TagElement;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-public class TagExam {
+public class DBTest {
 
 	public static void main(String[] args) {
 
@@ -33,8 +33,8 @@ public class TagExam {
 		String port = "1433";
 		String user = "sa";
 		String password = "manager";
-		String database = "ExampleDB";
-		String table = "uniform";
+		String database = "MYDB";
+		String table = "uniform_code";
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		ds.setUrl("jdbc:sqlserver://" + server + ":" + port + ";databaseName=" + database);
@@ -43,47 +43,57 @@ public class TagExam {
 		ds.setMaxTotal(50);
 		ds.setMaxIdle(20);
 
-		//
-		// °Ñ¼Æ1.table name
-		// °Ñ¼Æ2.¦h­ÓÄæ¦ì¦WºÙ,
-		// °Ñ¼Æ3.¦h­Ó­È
-		// ­ì«h¤W2»P3ªº°t¦X¤U,¥u­n¸ê®Æ¥¿½T,§Y¨ÏCSVÀÉ¸ê®Æ¶¶§Ç»P¸ê®Æ®w¤£¤@­P¤]¥i¥H¶×¤J
-
+	
+		String createTable="CREATE TABLE "+table+" (rowid INTEGER IDENTITY(1,1) PRIMARY KEY ,";
 		String sql = "insert into " + table + " (";
 
 		String values = (" values(");
+		String path="C:\\Users\\2102062\\Desktop\\BGMOPEN1.csv";
+		
+		File file = new File(path);
+		
+		List<Integer>errorIndex=new ArrayList<>();
+		
+		System.out.println("file info:"+file.exists()+" "+file.getAbsolutePath()+" "+file.length());
 
-		File file = new File("D:\\±M®×¸ê®Æ§¨\\¥ş°êÀç·~(µ|Äy)µn°O¸ê®Æ¶°\\BGMOPEN1\\BGMOPEN1.csv");
-
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));// new
-																												// FileReader(csv)
-
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));//
+				
+			
 		) {
-			// ³B²zCSVªº¼ĞÃD,«÷¦¨§¹¾ãSQL»y¥y
-
-			// ÅªCSVªº²Ä¤@¦æ,¹w³]¥Î¥b§Î","°Ï¹j¡Aª`·N¸I¨ì¤£«öµP²z¥XµPªº®æ¦¡¦³¦º±¼ªº¥i¯à
+			
 			String columnNames[] = br.readLine().split(",");
 			for (int i = 0; i < columnNames.length; i++) {
 				sql += columnNames[i];
 				values += "?";
+				createTable+=columnNames[i]+" NVARCHAR(MAX)";
+			
 
 				if (i < columnNames.length - 1) {
 					sql += ",";
+					createTable+=",";
 					values += ",";
 				} else {
 					sql += ")";
+					createTable+=")";
 					values += ")";
 				}
 			}
 
 			sql += values;
-			System.out.println(sql);
+			System.out.println("insertSQL="+sql);
+			System.out.println("createSQL="+createTable);
 			System.out.println("end");
 			int columnLen = columnNames.length;
 			System.out.println("columnLen=" + columnLen);
+			
 
-			try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(sql);) {
-
+			try (
+					Connection conn = ds.getConnection();
+					Statement st=conn.createStatement();
+					PreparedStatement ps = conn.prepareStatement(sql);)
+			{
+				System.out.println("create table:"+st.executeUpdate(createTable));
+				
 				String line = null;
 				int count = 0;
 				int count2 = 0;
@@ -100,7 +110,6 @@ public class TagExam {
 							data.add("");
 						}
 						System.out.println("after size:" + data.size());
-
 					}
 
 					for (int i = 0; i < data.size(); i++) {
@@ -116,10 +125,23 @@ public class TagExam {
 					count2++;
 
 					if (count >= 100) {
-						int[] result = ps.executeBatch();
-						ps.clearBatch();
-						count = 0;
-						System.out.println("µ§¼Æ" + count2);
+						try {
+							int[] result = ps.executeBatch();
+							ps.clearBatch();
+							count = 0;
+							System.out.println("executed:" + count2);
+							
+						} catch (Exception e) {
+							errorIndex.add(count2);
+							System.out.println("ç™¼ç”ŸéŒ¯èª¤,éŒ¯èª¤ä½ç½®ç‚º:"+count2);
+							e.printStackTrace();
+						
+							count=0;
+							
+							
+							
+						}
+						
 
 					}
 				}
@@ -137,6 +159,13 @@ public class TagExam {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+	}
+	
+	
+	public void tempMethod() {
+		
+		
 		//
 //		try (Statement st=ds.getConnection().createStatement();
 //				PreparedStatement ps=st.getConnection().prepareStatement("insert into category values(?)")){
