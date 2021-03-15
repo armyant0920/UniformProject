@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -28,12 +29,14 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class DBTest {
 
 	public static void main(String[] args) {
+		
+		Long start=System.currentTimeMillis();
 
 		String server = "localhost";
 		String port = "1433";
 		String user = "sa";
 		String password = "manager";
-		String database = "MYDB";
+		String database = "ExampleDB";
 		String table = "uniform_code";
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -48,7 +51,7 @@ public class DBTest {
 		String sql = "insert into " + table + " (";
 
 		String values = (" values(");
-		String path="C:\\Users\\2102062\\Desktop\\BGMOPEN1.csv";
+		String path="D:\\專案資料夾\\全國營業(稅籍)登記資料集\\BGMOPEN1\\BGMOPEN1.csv";
 		
 		File file = new File(path);
 		
@@ -133,7 +136,7 @@ public class DBTest {
 							
 						} catch (Exception e) {
 							errorIndex.add(count2);
-							System.out.println("發生錯誤,錯誤位置為:"+count2);
+							
 							e.printStackTrace();
 						
 							count=0;
@@ -159,6 +162,10 @@ public class DBTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("ERROR OCCUR:"+errorIndex);
+		System.out.println("spent time:"+(System.currentTimeMillis()-start)+"mills");
+		System.out.println("END ");
 
 	}
 	

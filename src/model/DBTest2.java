@@ -21,7 +21,8 @@ public class DBTest2 {
 //			
 //		}
 
-		selectRandom();
+//		selectRandom();
+		createUniform();
 
 	}
 	
@@ -50,59 +51,67 @@ public class DBTest2 {
 		
 	}
 	
-	public static void createUniform() {
+	public static String createUniform() {
 		
 		
 		
 		Random rnd=new Random();
 		StringBuilder sb=new StringBuilder();
 		int sum=0;
+		int current;
 		boolean isSeven=false;
-		for(int i=1;i<=8;i++) {
+		for(int i=1;i<=7;i++) {
 			
-			int temp=rnd.nextInt(10)*checkNum[i];
-			
-			
-			sb.append(rnd.nextInt(10));
+			current=rnd.nextInt(10);
 			
 			
 			
-			if (i == 6 && temp == 7) { // 特殊狀況:第7個數字=7時
+			
+			
+			
+			if (i == 7 && current == 7) { // 特殊狀況:第7個數字=7時
 
 				isSeven = true;
 
 			} else {
-
-				int temp = current * checkCode[i];
+				
+				int temp = current * checkNum[i-1];
 
 				if (temp >= 10) {
 
 					temp = (temp / 10) + (temp % 10);
-//					System.out.println("temp="+temp);								
+//													
 				}
 
 				sum += temp;
 
 			}
+			
+			sb.append(current);
 
 		}
 //		System.out.println("sum=" + sum);
-
+		int lastCode;	
 		if (isSeven) {
-			if (sum % 10 == 0 || (sum + 1) % 10 == 0) {
-				return true;
-			} else {
-				return false;
+			
+			if(rnd.nextBoolean()) {
+				
+				lastCode=10-(sum+1)%10;
+			}else {
+				lastCode=10-sum%10;
 			}
-		} else {
-
-			return (sum % 10 == 0);
-
+		
+		}else {
+			
+			lastCode=10-sum%10;
 		}
-			
-			
-			
-		}
+		
+		sb.append(lastCode);
+		String result=sb.toString();
+		
+		System.out.println("result:"+result);
+		System.out.println("Verification:"+Verification.checkUniform(result));
+		return result;
 		
 		
 		
