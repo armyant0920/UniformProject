@@ -59,13 +59,11 @@ public class DBTest2 {
 		int sum=0;
 		boolean isSeven=false;
 		for(int i=1;i<=8;i++) {
-		
-			int temp=rnd.nextInt(10)*checkNum[i];
-			if(temp>=10) {
-				
-			}
-			sb.append(rnd.nextInt(10));
 			
+			int temp=rnd.nextInt(10)*checkNum[i];
+			
+			
+			sb.append(rnd.nextInt(10));
 			
 			
 			
