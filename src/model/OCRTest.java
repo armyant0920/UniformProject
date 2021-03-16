@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
-public class Test2 {
+public class OCRTest {
 
 	public static void main(String[] args) throws URISyntaxException {
 		// TODO Auto-generated method stub
