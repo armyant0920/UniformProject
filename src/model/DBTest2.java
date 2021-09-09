@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.Random;
 import java.util.Scanner;
@@ -28,7 +29,7 @@ public class DBTest2 {
 //		selectRandom();
 
 		int index = 0;
-		while (index < 10) {
+		while (index < 50) {
 			createUniform();
 			index++;
 		}
@@ -125,9 +126,14 @@ public class DBTest2 {
 			String sql = "select * from uniform_code where 統一編號 = '" + result + "'";
 
 			try (Statement st = DBConnect.getStatement(); ResultSet rs = st.executeQuery(sql);) {
+				
+				
 
 				if (rs.next()) {
-
+					ResultSetMetaData metadata=rs.getMetaData();
+					for(int i=1;i<=metadata.getColumnCount();i++) {
+						 System.out.printf("欄位:%S,%S\n",metadata.getColumnName(i),rs.getString(metadata.getColumnName(i)));
+					}
 					System.out.println("統編重複:" + rs.getString("統一編號"));
 
 				} else {
